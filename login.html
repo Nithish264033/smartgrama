@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>E-Governance Login & Registration</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 40px 35px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      color: #fff;
+      animation: fadeIn 1s ease-in-out;
+      position: relative;
+    }
+    h2 {
+      font-size: 28px;
+      margin-bottom: 25px;
+      font-weight: 600;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      background: rgba(255,255,255,0.22);
+      color: #fff;
+      transition: background 0.3s ease;
+    }
+    input::placeholder { color: #ddd; }
+    input:focus {
+      outline: none;
+      background: rgba(255,255,255,0.3);
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(to right, #92fe9d, #00c9ff);
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      margin-top: 8px;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(0,201,255,0.4);
+    }
+    .toggle-link {
+      background: none;
+      color: #fff;
+      font-size: 15px;
+      margin-top: 12px;
+      text-decoration: underline;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      padding: 0;
+      margin-bottom: 0;
+      text-align: center;
+      display: block;
+      font-weight: 600;
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .success { color: limegreen; }
+    .error { color: red; }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 30px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Login Form -->
+    <div id="loginForm">
+      <h2>Login</h2>
+      <input type="text" id="loginCardNumber" placeholder="Enter Card Number" required />
+      <input type="password" id="loginPassword" placeholder="Enter Password" required />
+      <button onclick="login()">Login</button>
+      <div id="loginMessage" class="message"></div>
+      <button class="toggle-link" onclick="showRegisterForm()">New user? Register here</button>
+    </div>
+    <!-- Registration Form (hidden by default) -->
+    <div id="registerForm" style="display:none;">
+      <h2>Register</h2>
+      <input type="text" id="registerCardNumber" placeholder="Enter Card Number" required />
+      <input type="password" id="registerPassword" placeholder="Enter Password" required />
+      <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" required />
+      <button onclick="register()">Register</button>
+      <div id="registerMessage" class="message"></div>
+      <button class="toggle-link" onclick="showLoginForm()">Already have an account? Login</button>
+    </div>
+  </div>
+  <script>
+    // Show Registration Form
+    function showRegisterForm() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('registerForm').style.display = 'block';
+      document.getElementById('loginMessage').textContent = '';
+      document.getElementById('registerMessage').textContent = '';
+    }
+    // Show Login Form
+    function showLoginForm() {
+      document.getElementById('registerForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('loginMessage').textContent = '';
+      document.getElementById('registerMessage').textContent = '';
+    }
+
+    // Login function
+    async function login() {
+      const cardNumber = document.getElementById('loginCardNumber').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const messageBox = document.getElementById('loginMessage');
+      messageBox.textContent = '';
+      messageBox.className = "message error";
+      if (!cardNumber || !password) {
+        messageBox.textContent = 'Please enter both Card Number and Password';
+        return;
+      }
+      try {
+        const response = await fetch('http://localhost:3000/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cardNumber, password })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          localStorage.setItem('userData', JSON.stringify(data.user));
+          messageBox.className = "message success";
+          messageBox.textContent = '✅ Successfully logged in! Redirecting...';
+          setTimeout(() => {
+            window.location.href = 'prjt.html';
+          }, 2000);
+        } else {
+          messageBox.textContent = data.message || 'Login failed!';
+        }
+      } catch (error) {
+        messageBox.textContent = 'Server error. Please try again.';
+        console.error(error);
+      }
+    }
+
+    // Register function
+    async function register() {
+      const cardNumber = document.getElementById('registerCardNumber').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+      const confirmPassword = document.getElementById('registerConfirmPassword').value.trim();
+      const messageBox = document.getElementById('registerMessage');
+      messageBox.textContent = '';
+      messageBox.className = "message error";
+      if (!cardNumber || !password || !confirmPassword) {
+        messageBox.textContent = 'All fields are required';
+        return;
+      }
+      if (password.length < 6) {
+        messageBox.textContent = 'Password must be at least 6 characters';
+        return;
+      }
+      if (password !== confirmPassword) {
+        messageBox.textContent = 'Passwords do not match';
+        return;
+      }
+      try {
+        const response = await fetch('http://localhost:3000/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cardNumber, password })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          messageBox.className = "message success";
+          messageBox.textContent = '✅ Successfully registered! Please log in.';
+          setTimeout(() => {
+            showLoginForm();
+          }, 1500);
+        } else {
+          messageBox.textContent = data.message || 'Registration failed!';
+        }
+      } catch (error) {
+        messageBox.textContent = 'Server error. Please try again.';
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
+
