@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>E-Governance Registration</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+    .register-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 40px 35px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      color: #fff;
+      animation: fadeIn 1s ease-in-out;
+    }
+    h2 {
+      font-size: 28px;
+      margin-bottom: 25px;
+      font-weight: 600;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      transition: background 0.3s ease;
+    }
+    input::placeholder { color: #ddd; }
+    input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.3);
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #00c9ff;
+      background: linear-gradient(to right, #92fe9d, #00c9ff);
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      margin-top: 8px;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(0, 201, 255, 0.4);
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .success { color: limegreen; }
+    .error { color: red; }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @media (max-width: 480px) {
+      .register-container { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="register-container">
+    <h2>E-Governance Registration</h2>
+    <form id="registerForm" autocomplete="off">
+      <input type="text" id="cardNumber" placeholder="Enter Card Number" required />
+      <input type="password" id="password" placeholder="Enter Password" required />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+      <button type="submit">Register</button>
+      <div id="message" class="message"></div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const cardNumber = document.getElementById('cardNumber').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+      const messageBox = document.getElementById('message');
+      messageBox.textContent = '';
+      messageBox.className = 'message error';
+
+      if (!cardNumber || !password || !confirmPassword) {
+        messageBox.textContent = 'All fields are required.';
+        return;
+      }
+      if (password.length < 6) {
+        messageBox.textContent = 'Password must be at least 6 characters.';
+        return;
+      }
+      if (password !== confirmPassword) {
+        messageBox.textContent = 'Passwords do not match.';
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cardNumber, password })
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          messageBox.className = 'message success';
+          messageBox.textContent = '✅ Registration successful! You can now log in.';
+          document.getElementById('registerForm').reset();
+        } else {
+          messageBox.textContent = data.message || 'Registration failed!';
+        }
+      } catch (error) {
+        messageBox.textContent = 'Server error. Please try again.';
+        console.error(error);
+      }
+    });
+  </script>
+
+</body>
+</html>
