@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tamil Nadu Smartcard Scheme Checker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  margin-top: 30px;
+  color: #fff;
+  font-size: 36px;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+}
+
+.form-section {
+  margin-top: 30px;
+  background: #ffffff;
+  padding: 40px 35px;
+  border-radius: 18px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: 0.4s ease;
+}
+
+.form-section:hover {
+  transform: translateY(-8px);
+}
+
+.form-section label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.form-section input,
+.form-section select {
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #f9f9f9;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-section input:focus,
+.form-section select:focus {
+  border-color: #74ebd5;
+}
+
+.form-section button {
+  margin-top: 10px;
+  padding: 14px;
+  background: linear-gradient(90deg, #00C9FF, #92FE9D);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.form-section button:hover {
+  background: linear-gradient(90deg, #92FE9D, #00C9FF);
+}
+
+    
+    /* NEW: Bigger "Check Eligibility" button */
+    #checkBtn {
+      padding: 18px 26px;
+      font-size: 15px;
+      height: auto;
+      width: 55%;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: #ffffff;
+      font-weight: bold;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    
+    #checkBtn:hover {
+      transform: scale(1.07);
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+    }
+    
+    #speakBtn {
+      background: linear-gradient(to right, #38ef7d, #11998e);
+      margin-top: 18px;
+      padding: 10px 14px;
+      font-size: 14px;
+      width: auto;
+      display: block;
+      margin-left: auto;
+      margin-top: 10px;
+    }
+    
+    #speakBtn:hover {
+      background: linear-gradient(to right, #11998e, #38ef7d);
+    }
+    
+    .result {
+      margin-top: 50px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(14px);
+      padding: 35px;
+      border-radius: 25px;
+      color: #ffffff;
+      width: 100%;
+      max-width: 1000px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+    }
+    
+    th, td {
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: center;
+      color: #141313;
+      border-radius: 10px;
+    }
+    
+    th {
+      background-color: rgba(255, 255, 255, 0.3);
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .apply-btn {
+      display: inline-block;
+      padding: 10px 24px;
+      background: linear-gradient(to right, #f7971e, #ffd200);
+      color: #000;
+      font-weight: bold;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+    
+    .apply-btn:hover {
+      transform: scale(1.07);
+      background: linear-gradient(to right, #ffd200, #f7971e);
+      color: #000;
+    }
+    
+    #google_translate_element {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      z-index: 999;
+    }
+    
+    .logout-btn {
+      padding: 10px 18px;
+      font-size: 14px;
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+      background-color: #ff4d4d;
+    }
+    
+    .bu {
+      padding: 10px 22px;
+    }
+    
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      .form-section, .result {
+        padding: 30px 20px;
+      }
+      table th, table td {
+        font-size: 14px;
+      }
+    }
+    </style>
+    
+    
+</head>
+<body>
+  <img src="file:///C:/Users/e-gov-auth/Picsart_25-04-28_22-32-45-582.png" alt=""  width="50%" >
+
+  <button id="speakBtn" onclick="readResult()" style="display: none;">🔊 Read Aloud</button>
+  <div id="google_translate_element"></div>
+
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <div class="container">
+    <div class="form-section">   
+      <label id="labelCardType" for="cardType">Ration Card Type:</label>
+      <select id="cardType">
+        <option value="">-- Select Card Type --</option>
+        <option value="PHH">PHH</option>
+        <option value="NPHH">NPHH</option>
+        <option value="AAY">AAY</option>
+      </select>
+  
+      <label id="labelMale" for="maleCount">Number of Males:</label>
+      <input type="number" id="maleCount" placeholder="e.g. 2" oninput="autoFillFamily()">
+  
+      <label id="labelFemale" for="femaleCount">Number of Females:</label>
+      <input type="number" id="femaleCount" placeholder="e.g. 2" oninput="autoFillFamily()">
+  
+      <label id="labelTotal" for="totalMembers">Total Family Members:</label>
+      <input type="number" id="totalMembers" placeholder="e.g. 4" readonly>
+      <button onclick="checkEligibility()" id="checkBtn">Check Eligibility</button>
+    </div>
+    <div class="result" id="resultBox" style="display: none;">  </div>
+  </div>
+  <br>
+  <br>
+  <br>
+   <!-- Logout Button -->
+    <div class="bu"><button onclick="logout()" class="logout-btn">Logout</button>
+    </div>
+
+
+  <script>
+    const translations = {
+      en: {
+        title: 'Tamil Nadu Smartcard Scheme Checker',
+        cardLabel: 'Ration Card Type:',
+        male: 'Number of Males:',
+        female: 'Number of Females:',
+        total: 'Total Family Members:',
+        check: 'Check Eligibility',
+        error: '❌ Please enter all details correctly.',
+        food: 'Food Allocation',
+        scheme: 'Eligible Schemes',
+        family: 'Family Members',
+        card: 'Card Type',
+        apply: 'Click Here to Apply'
+      }
+    };
+
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        { pageLanguage: 'en' },
+        'google_translate_element'
+      );
+    }
+
+    function speakText(text, lang = 'en-US') {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      speechSynthesis.speak(utterance);
+    }
+
+    function readResult() {
+      const cardType = document.getElementById("cardType").value;
+      const maleCount = document.getElementById("maleCount").value;
+      const femaleCount = document.getElementById("femaleCount").value;
+      const totalMembers = document.getElementById("totalMembers").value;
+      const schemeList = schemes[cardType] || [];
+
+      const schemeTitles = schemeList.map(s => s.title).join(', ');
+      const summary = `You have a ${cardType} card. Your family has ${maleCount} males and ${femaleCount} females. Total members: ${totalMembers}. You are eligible for schemes like: ${schemeTitles}.`;
+
+      speakText(summary);
+    }
+
+    let currentLang = 'en';
+
+    const schemes = {
+      'PHH': [
+        { title: 'PDS - Food Security', detail: '5 kg rice per person/month free. Subsidized sugar, kerosene, and cooking oil.', link: 'https://tnpds.gov.in' },
+        { title: 'Ayushman Bharat (PM-JAY)', detail: '₹5 lakh free health insurance for eligible families.', link: 'https://pmjay.gov.in' },
+        { title: 'PM Ujjwala Yojana', detail: 'Free LPG connection and initial refill subsidy.', link: 'https://www.pmuy.gov.in' },
+        { title: 'PM Awas Yojana', detail: '₹1.2 lakh subsidy for rural house construction.', link: 'https://pmaymis.gov.in' },
+        { title: 'State Pensions', detail: 'Old age, widow, and disability pension support.', link: 'https://www.tn.gov.in/scheme/data_view/64450' },
+        { title: 'Student Scholarships', detail: 'Pre- and post-matric scholarships for BPL students.', link: 'https://escholarship.tn.gov.in/' },
+        { title: 'MGNREGA', detail: '100 days rural employment guarantee.', link: 'https://nrega.nic.in' },
+        { title: 'Free Electricity', detail: 'Free connections for poor households or farmers.', link: 'https://www.tangedco.org' }
+      ],
+      'AAY': [
+        { title: 'PDS - Food Security', detail: '35 kg rice/month per family. Subsidized sugar, kerosene, cooking oil.', link: 'https://tnpds.gov.in' },
+        { title: 'Festival Ration Kits', detail: 'Special festival kits during Pongal and other events.', link: 'https://www.tn.gov.in/scheme/data_view/65834' },
+        { title: 'Ayushman Bharat (PM-JAY)', detail: '₹5 lakh free health insurance for poorest families.', link: 'https://pmjay.gov.in' },
+        { title: 'PM Ujjwala Yojana', detail: 'Free LPG connections for poor women.', link: 'https://www.pmuy.gov.in' },
+        { title: 'PM Awas Yojana', detail: '₹1.2 lakh subsidy for house construction in rural areas.', link: 'https://pmaymis.gov.in' },
+        { title: 'State Pensions', detail: 'Monthly pension for aged, widows, disabled.', link: 'https://www.tn.gov.in/scheme/data_view/64450' },
+        { title: 'Student Scholarships', detail: 'Scholarships for students from poor households.', link: 'https://escholarship.tn.gov.in/' },
+        { title: 'MGNREGA', detail: '100 days work with guaranteed wages.', link: 'https://nrega.nic.in' }
+      ],
+      'NPHH': [
+        { title: 'Rice (subsidized)', detail: '4 kg per person/month at subsidized price.', link: 'https://tnpds.gov.in' },
+        { title: 'Sugar (subsidized)', detail: 'Up to 2 kg/month at ₹25/kg (limited subsidy).', link: 'https://tnpds.gov.in' },
+        { title: 'Kerosene (limited)', detail: 'Rationed subsidized kerosene if eligible.', link: 'https://tnpds.gov.in' },
+        { title: 'General Welfare Access', detail: 'May access general schemes not based on BPL status.', link: 'https://www.tn.gov.in/scheme' }
+      ]
+    };
+
+    function autoFillFamily() {
+      document.getElementById("speakBtn").style.display = "inline-block";
+
+      const male = parseInt(document.getElementById("maleCount").value) || 0;
+      const female = parseInt(document.getElementById("femaleCount").value) || 0;
+      document.getElementById("totalMembers").value = male + female;
+    }
+
+    function checkEligibility() {
+      const t = translations[currentLang];
+      const cardType = document.getElementById("cardType").value;
+      const totalMembers = parseInt(document.getElementById("totalMembers").value);
+      const maleCount = parseInt(document.getElementById("maleCount").value);
+      const femaleCount = parseInt(document.getElementById("femaleCount").value);
+      const resultBox = document.getElementById("resultBox");
+
+      if (!cardType || isNaN(totalMembers) || isNaN(maleCount) || isNaN(femaleCount)) {
+        resultBox.style.display = "block";
+        resultBox.innerHTML = `<p>${t.error}</p>`;
+        return;
+      }
+
+      let foodDetails = [];
+      if (cardType === 'PHH') {
+        foodDetails = [
+          ['Rice', `${totalMembers * 5} kg/month`],
+          ['Sugar', '1 kg/month'],
+          ['Dhal', '1 kg/month'],
+          ['Kerosene', '3-5 litres/month (if eligible)']
+        ];
+      } else if (cardType === 'AAY') {
+        foodDetails = [
+          ['Rice', '35 kg/month per family'],
+          ['Sugar', '2 kg/month'],
+          ['Dhal', '1 kg/month'],
+          ['Kerosene', '3-5 litres/month (if eligible)']
+        ];
+      } else if (cardType === 'NPHH') {
+        foodDetails = [
+          ['Rice', `${totalMembers * 4} kg/month`],
+          ['Sugar', 'Up to 2 kg/month'],
+          ['Dhal', 'Not Provided'],
+          ['Kerosene', 'Limited based on availability']
+        ];
+      }
+
+      const schemeList = schemes[cardType] || [];
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `
+        <h2>${t.card}: ${cardType}</h2>
+        <p><strong>${t.family}:</strong> ${totalMembers} (Males: ${maleCount}, Females: ${femaleCount})</p>
+        <h3>${t.food}</h3>
+        <table>
+          <thead><tr><th>Item</th><th>Quantity</th></tr></thead>
+          <tbody>${foodDetails.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`).join('')}</tbody>
+        </table>
+        <h3>${t.scheme}</h3>
+        <table>
+          <thead><tr><th>Scheme</th><th>Description</th><th>Apply</th></tr></thead>
+          <tbody>
+            ${schemeList.map(s => `
+              <tr>
+                <td>${s.title}</td>
+                <td>${s.detail}</td>
+                <td><a class="apply-btn" href="${s.link}" target="_blank">${t.apply}</a></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`;
+    }
+  function logout() {
+  // Clear user data from localStorage
+  localStorage.removeItem('userData');
+
+  // Redirect to the login page
+  window.location.href = 'index.html'; // Change 'login.html' to your actual login page URL
+}
+
+  </script>
+</body>
+</html>
